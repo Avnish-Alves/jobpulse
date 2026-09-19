@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: jobpulse
+
+  profiles:
+    active: dev
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:jobpulse;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+jobpulse:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration-ms: 86400000
+
+---
+jobpulse:
+  jwt:
+    secret: "dev-only-secret-change-me-dev-only-secret-change-me-32bytes"
+    expiration-ms: 86400000
