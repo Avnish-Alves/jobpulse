@@ -101,7 +101,7 @@ Start the application with:
 java -jar target/jobpulse-0.1.0.jar --spring.profiles.active=prod
 ```
 
-## API overview
+## API overviews
 
 | Method | Endpoint | Authentication | Purpose |
 |---|---|---|---|
