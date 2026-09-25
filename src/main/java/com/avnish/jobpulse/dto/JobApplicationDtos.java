@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 public class JobApplicationDtos {
 
@@ -31,5 +32,11 @@ public class JobApplicationDtos {
             LocalDate followUpDue,
             boolean followUpFlagged,
             ApplicationStatus status
+    ) {}
+
+    public record StatsResponse(
+            long total,
+            long flaggedForFollowUp,
+            Map<ApplicationStatus, Long> byStatus
     ) {}
 }

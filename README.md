@@ -20,7 +20,8 @@ JobPulse is a Spring Boot REST API for tracking job applications. It provides JW
 - BCrypt password hashing
 - Stateless JWT authentication
 - Per-user access to job applications
-- Create, list, and update application status
+- Create, list, update, and delete applications
+- Application status tracking with a stats summary endpoint
 - Scheduled follow-up processing
 - H2 development profile
 - PostgreSQL production profile using environment variables
@@ -110,3 +111,5 @@ java -jar target/jobpulse-0.1.0.jar --spring.profiles.active=prod
 | GET | `/api/applications` | Yes | List the current user's applications |
 | PATCH | `/api/applications/{id}/status` | Yes | Update an application's status |
 | GET | `/api/applications/follow-ups` | Yes | List applications flagged for follow-up |
+| GET | `/api/applications/stats` | Yes | Summary counts: total, flagged, and per-status breakdown |
+| DELETE | `/api/applications/{id}` | Yes | Delete an application |

@@ -2,6 +2,7 @@ package com.avnish.jobpulse.controller;
 
 import com.avnish.jobpulse.dto.JobApplicationDtos.CreateRequest;
 import com.avnish.jobpulse.dto.JobApplicationDtos.Response;
+import com.avnish.jobpulse.dto.JobApplicationDtos.StatsResponse;
 import com.avnish.jobpulse.dto.JobApplicationDtos.UpdateStatusRequest;
 import com.avnish.jobpulse.service.JobApplicationService;
 import jakarta.validation.Valid;
@@ -34,6 +35,17 @@ public class JobApplicationController {
     @GetMapping("/follow-ups")
     public ResponseEntity<List<Response>> flaggedFollowUps(@AuthenticationPrincipal UserDetails user) {
         return ResponseEntity.ok(applicationService.listFlaggedFollowUps(user.getUsername()));
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<StatsResponse> stats(@AuthenticationPrincipal UserDetails user) {
+        return ResponseEntity.ok(applicationService.stats(user.getUsername()));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@AuthenticationPrincipal UserDetails user, @PathVariable Long id) {
+        applicationService.delete(user.getUsername(), id);
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}/status")

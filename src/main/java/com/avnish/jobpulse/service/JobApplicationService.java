@@ -2,6 +2,7 @@ package com.avnish.jobpulse.service;
 
 import com.avnish.jobpulse.dto.JobApplicationDtos.CreateRequest;
 import com.avnish.jobpulse.dto.JobApplicationDtos.Response;
+import com.avnish.jobpulse.dto.JobApplicationDtos.StatsResponse;
 import com.avnish.jobpulse.model.ApplicationStatus;
 import com.avnish.jobpulse.model.JobApplication;
 import com.avnish.jobpulse.model.User;
@@ -10,7 +11,10 @@ import com.avnish.jobpulse.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +56,25 @@ public class JobApplicationService {
         User owner = currentUser(ownerEmail);
         return applicationRepository.findByOwnerAndFollowUpFlaggedTrue(owner).stream()
                 .map(this::toResponse).toList();
+    }
+
+    public void delete(String ownerEmail, Long id) {
+        User owner = currentUser(ownerEmail);
+        JobApplication app = applicationRepository.findByOwnerAndId(owner, id).stream().findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No such application for this user"));
+        applicationRepository.delete(app);
+    }
+
+    public StatsResponse stats(String ownerEmail) {
+        User owner = currentUser(ownerEmail);
+        List<JobApplication> applications = applicationRepository.findByOwner(owner);
+
+        Map<ApplicationStatus, Long> byStatus = applications.stream()
+                .collect(Collectors.groupingBy(JobApplication::getStatus, () -> new EnumMap<>(ApplicationStatus.class),
+                        Collectors.counting()));
+        long flagged = applications.stream().filter(JobApplication::isFollowUpFlagged).count();
+
+        return new StatsResponse(applications.size(), flagged, byStatus);
     }
 
     private User currentUser(String email) {
